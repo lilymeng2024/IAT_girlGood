@@ -3,42 +3,87 @@
   <head>
     <title>Implicit Association Test</title>
     <script src="jspsych/jspsych.js"></script>
+    <script src="jspsych/plugin-survey-text.js"></script>
     <script src="jspsych/plugin-html-keyboard-response.js"></script>
     <script src="jspsych/plugin-iat-html.js"></script>
     <script src="jspsych/plugin-iat-image.js"></script>
     <script src="jspsych/plugin-preload.js"></script>
     <link href="jspsych/jspsych.css" rel="stylesheet" type="text/css" />
-    <style>
-    .iat-container {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;   /* vertical center */
-        align-items: center;       /* horizontal center */
-        height: 70vh;              /* pulls everything upward */
-        text-align: center;
-    }
+</head>
+<body></body>
+<!-- Allow remote storage on Google Firebase -->
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-app.js"></script>
+    
+<!-- TODO: Add SDKs for Firebase products that you want to use
+https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.12.0/firebase-database.js"></script>
 
-    .iat-stimulus-img {
-        max-height: 300px;
-        object-fit: contain;
-    }
+<!--enter some javascript code-->
+<script type="text/javascript">
 
-    .iat-stimulus-text {
-        font-size: 60px;  /* bigger word */
-    }
+    //Firebase set up
+    const firebaseConfig = {
+        apiKey: "AIzaSyBL6_rjTMklznQUS8wUa64M2KG5wqCVsHs",
+        authDomain: "jspsych-online-experiment.firebaseapp.com",
+        databaseURL: "https://jspsych-online-experiment-default-rtdb.firebaseio.com",
+        projectId: "jspsych-online-experiment",
+        storageBucket: "jspsych-online-experiment.firebasestorage.app",
+        messagingSenderId: "1079706142",
+        appId: "1:1079706142:web:83f4f2ef0e0ff50a66240f"
+    };
 
-    .iat-instruction {
-        margin-top: 20px;  /* closer to stimulus */
-        font-size: 24px;
-    }
-    </style>
-  </head>
-  <body></body>
-  <script>
+    //initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    //get a reference to the database service
+    var database = firebase.database();
+
+    //login anonynous user
+    firebase.auth().signInAnonymously().catch(function(error) {
+        //error handling
+        var errorCode = error.code;
+        var errorMessage = error.message;
+    });
+
+    // check user can sign on to firebase
+    firebase.auth().onAuthStateChanged(function(user) {
+        if (user) {
+            // user is signed in
+            var isAnonymous = user.isAnonymous;
+            var uid = user.uid;
+        } else {
+            //user is signed out
+        }
+    });
+
+    //initiaize jsPsych
     var jsPsych = initJsPsych({
         on_finish: function (){
-            jsPsych.data.displayData();
+        // get all data from jsPsych
+            var data = jsPsych.data.get().values();
+
+            // save to Firebase
+            database.ref("participants").push({
+                subject: subject_id,
+                data: data,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            })
+            .then(() => {
+                console.log("Data saved to Firebase successfully!");
+            })
+            .catch((error) => {
+                console.error("Error saving to Firebase:", error);
+            });
         }
+    });
+
+    //anoynous subject_id
+    var subject_id = jsPsych.randomization.randomID(15); //Firebase
+    console.log(subject_id);
+    jsPsych.data.addProperties({
+        subject: subject_id
     });
 
     //Create Timeline
@@ -269,6 +314,20 @@
             choices: [' ']
         };
     }
+
+    //Enter participant ID
+    var participant_ID={
+        type:jsPsychSurveyText,
+        questions :[
+            {prompt:`
+                <div style="max-width: 900px; margin: auto; text-align: left; line-height: 1.6;">
+                <p>Enter your participant ID to start the task.</p>`,
+                name: 'ID',
+                required:true
+            }
+        ]
+    };
+    timeline.push (participant_ID);
 
     //Tutorial
     var tutorial_1= {
