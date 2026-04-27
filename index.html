@@ -58,6 +58,9 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
         }
     });
 
+    //participant input ID
+    var participant_input_id = null;
+
     //initiaize jsPsych
     var jsPsych = initJsPsych({
         on_finish: function (){
@@ -67,6 +70,7 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
             // save to Firebase
             database.ref("participants").push({
                 subject: subject_id,
+                participant_id: participant_input_id,
                 data: data,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             })
@@ -78,6 +82,7 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
             });
         }
     });
+
 
     //anoynous subject_id
     var subject_id = jsPsych.randomization.randomID(15); //Firebase
@@ -325,7 +330,11 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
                 name: 'ID',
                 required:true
             }
-        ]
+        ],
+        on_finish: function(data){
+            participant_input_id = data.response.ID;
+            console.log("Participant entered ID:", participant_input_id);
+        }
     };
     timeline.push (participant_ID);
 
