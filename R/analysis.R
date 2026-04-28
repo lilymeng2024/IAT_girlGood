@@ -12,8 +12,8 @@ df <- df %>% filter(rt <= 10000)
 
 # 2. Remove subjects with >10% trials < 300 ms
 fast_trials <- df %>%
-  group_by(subject) %>%
-  summarise(prop_fast = mean(rt < 300, na.rm = TRUE), .groups = "drop")
+  dplyr::group_by(subject) %>%
+  dplyr::summarise(prop_fast = mean(rt < 300, na.rm = TRUE), .groups = "drop")
 
 valid_subjects <- fast_trials %>%
   filter(prop_fast <= 0.10) %>%
@@ -27,21 +27,21 @@ df <- df %>% filter(rt >= 400)
 #---------------------------------------------------------#
 #mean rt of correct trials for each block
 block_means <- df %>%
-  filter(correct == TRUE) %>%
-  group_by(subject, block) %>%
-  summarise(mean_rt = mean(rt), .groups = "drop")
+  dplyr::filter(correct == TRUE) %>%
+  dplyr::group_by(subject, block) %>%
+  dplyr::summarise(mean_rt = mean(rt), .groups = "drop")
 
 #pooled SD
 #3&6
 sd_36 <- df %>%
-  filter(block %in% c(3,6), correct == TRUE) %>%
-  group_by(subject) %>%
-  summarise(sd_36 = sd(rt), .groups = "drop")
+  dplyr::filter(block %in% c(3,6), correct == TRUE) %>%
+  dplyr::group_by(subject) %>%
+  dplyr::summarise(sd_36 = sd(rt), .groups = "drop")
 #4&7
 sd_47 <- df %>%
-  filter(block %in% c(4,7), correct == TRUE) %>%
-  group_by(subject) %>%
-  summarise(sd_47 = sd(rt), .groups = "drop")
+  dplyr::filter(block %in% c(4,7), correct == TRUE) %>%
+  dplyr::group_by(subject) %>%
+  dplyr::summarise(sd_47 = sd(rt), .groups = "drop")
 
 #replace incorrect trials
 #join block means first
@@ -56,8 +56,8 @@ df <- df %>%
 
 #compute RT mean after replacement
 block_avg <- df %>%
-  group_by(subject, block) %>%
-  summarise(mean_rt_adj = mean(rt_adj), .groups = "drop")
+  dplyr::group_by(subject, block) %>%
+  dplyr::summarise(mean_rt_adj = mean(rt_adj), .groups = "drop")
 
 # compute differences
 #reshape wide
@@ -88,8 +88,14 @@ block_wide <- block_wide %>%
 
 #Final output
 final_scores <- block_wide %>%
-  select(participant_ID, D_score)
+  select(subject, D_score)
+id_lookup <- df %>%
+  select(subject, participant_id) %>%
+  distinct()
+final_scores <- final_scores %>%
+  left_join(id_lookup, by = "subject")
+
+final_scores <- final_scores %>%
+  select(participant_id, D_score)
 
 head(final_scores)
-
-
