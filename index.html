@@ -60,6 +60,8 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
 
     //participant input ID
     var participant_input_id = null;
+    //record condition
+    var condition = "version1"; 
 
     //initiaize jsPsych
     var jsPsych = initJsPsych({
@@ -71,6 +73,7 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
             database.ref("participants").push({
                 subject: subject_id,
                 participant_id: participant_input_id,
+                condition: condition,
                 data: data,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             })

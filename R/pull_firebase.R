@@ -36,9 +36,9 @@ all_data <- lapply(participants, function(p){
   
   # create trial index within block
   df <- df %>%
-    group_by(block) %>%
-    mutate(trial_in_block = row_number()) %>%
-    ungroup()
+    dplyr::group_by(block) %>%
+    dplyr::mutate(trial_in_block = dplyr::row_number()) %>%
+    dplyr::ungroup()
   
   df$subject <- p$subject
   df$participant_id <- p$participant_id
@@ -57,4 +57,12 @@ final_data <- rbind.fill(all_data)
 length(unique(final_data$subject))
 
 # save data to .csv file
-write.csv(data, "./data/data.csv", row.names = FALSE)
+
+final_data <- final_data %>%
+  arrange(subject, block, trial_in_block)
+
+#remove unnecessary columns
+final_data_clean <- final_data %>%
+  select(-plugin_version, -response, -time_elapsed, -trial_type)
+
+write.csv(final_data_clean, "C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_girlGood./data/data.csv", row.names = FALSE)
