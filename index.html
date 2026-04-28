@@ -61,7 +61,7 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
     //participant input ID
     var participant_input_id = null;
     //record condition
-    var condition = "version1"; 
+    var condition = "version_girlGOOD"; 
 
     //initiaize jsPsych
     var jsPsych = initJsPsych({
@@ -85,7 +85,6 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
             });
         }
     });
-
 
     //anoynous subject_id
     var subject_id = jsPsych.randomization.randomID(15); //Firebase
@@ -425,13 +424,11 @@ https://firebase.google.com/docs/web/setup#available-libraries -->
 
     //Block 6 and Block 7
     //Left: boy + GOOD, Right: girl + BAD
-    //Block6
     timeline.push(
         createAlternatingMixedBlock(targets, attributes, ['boy','GOOD'], ['girl','BAD'], 6, 1)
     );
     timeline.push(blockFeedback(6));
 
-    //Block 7
     timeline.push(
         createAlternatingMixedBlock(targets, attributes, ['boy','GOOD'], ['girl','BAD'], 7, 2)
     );
