@@ -10,7 +10,7 @@ library(fireData) # https://github.com/Kohze/fireData
 # download all files from database
 dataBackup(projectURL = "https://jspsych-online-experiment-default-rtdb.firebaseio.com", #databaseURL
            secretKey = "Ce72TrPPKxBYHmCDEvvVebDINnDy76TXF3lo2So7", #Secret Key of the database
-           "C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_girlGood./data/data.json") # file path of where to save the data (out default assumes cloning the GitHub repo)
+           "C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_data_local/data.json") # file path of where to save the data (out default assumes cloning the GitHub repo)
 
 
 # install.packages("jsonlite")
@@ -23,7 +23,7 @@ library(jsonlite)
 library(dplyr)
 library(plyr)
 
-raw <- fromJSON("C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_girlGood./data/data.json")
+raw <- fromJSON("C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_data_local/data.json")
 
 participants <- raw$participants
 
@@ -65,4 +65,4 @@ final_data <- final_data %>%
 final_data_clean <- final_data %>%
   select(-plugin_version, -response, -time_elapsed, -trial_type)
 
-write.csv(final_data_clean, "C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_girlGood./data/data.csv", row.names = FALSE)
+write.csv(final_data_clean, "C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_data_local/data.csv", row.names = FALSE)

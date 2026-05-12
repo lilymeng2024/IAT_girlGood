@@ -1,8 +1,8 @@
 library(dplyr)
 library(jsonlite)
-df <- read.csv("C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_girlGood./data/data.csv")
+df <- read.csv("C:/Users/25688/OneDrive - University of Manitoba/桌面/IAT_data_local/data.csv")
 
-#Keep only blocks 3,4,6,7
+# Keep only blocks3,4,6,7
 df <- df %>% filter(block %in% c(3,4,6,7))
 
 #--------------Apply exclusion criteria-----------------#
